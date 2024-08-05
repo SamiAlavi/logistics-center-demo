@@ -22,14 +22,15 @@ def getPath():
     context = request_body['context']
     helyos_agents = context['agents'] # contains all data about the agents 
 
-    # Get agent identifiesr from user request data, it can be either agent_id or agent_uuid
-    agent_id = request_data.get('agent_id', request_data.get('tool_id', None))
+    # Get agent identifiers from user request data, it can be either agent_id or agent_uuid
+    tool_id = request_data.get('tool_id', None)
+    agent_id = request_data.get('agent_id', tool_id)
     if agent_id is None:
         agent_uuid = request_data['agent_uuid']
-        agent = next((a for a in helyos_agents if a['uuid'] == str(agent_uuid)), None) # find target agent in context
+        agent = next((agent for agent in helyos_agents if agent['uuid'] == str(agent_uuid)), None) # find target agent in context
         agent_id = agent['id']
     else:
-        agent = next((a for a in helyos_agents if a['id'] == str(agent_id)), None) # find target agent in context
+        agent = next((agent for agent in helyos_agents if agent['id'] == str(agent_id)), None) # find target agent in context
         agent_uuid = agent['uuid']
 
     # Get initial position either from user request or from helyOS context
@@ -40,10 +41,13 @@ def getPath():
     # Get destination from user request data
     destination = request_data.get('destination', None) # destination pose
     if destination is None:
-        destination = { 'x':request_data['x'], 'y':request_data['y'], 'orientations':request_data['orientations'], }
+        destination = {
+            'x': request_data['x'],
+            'y': request_data['y'],
+            'orientations': request_data['orientations']
+        }
 
-    # Calculate trajectory
-    destination['orientations'][0] = (destination['orientations'][0]/1000)%(2*math.pi) 
+    # Calculate trajectory 
     trajectory = calculate_path(initial_position, destination)
 
     # The autoTruck agent simulator accepts the autotruck-trucktrix data format for paths. So we need to convert to it.
@@ -51,15 +55,18 @@ def getPath():
     if 'trucktrix' in agent['data_format']:
         assignment = convert_to_trucktrix_format(trajectory)
     else:
-        assignment = {'trajectory': trajectory, 'operation':'driving'}     
+        assignment = {
+            'trajectory': trajectory,
+            'operation': 'driving'
+        }     
     
     # Return response
-    response =     {
-                    "results":[{
-                                    "agent_uuid": agent_uuid,
-                                    "assignment": assignment
-                                }]
-                }
+    response = {
+        "results": [{
+            "agent_uuid": agent_uuid,
+            "assignment": assignment
+        }]
+    }
     
 
     return jsonify(response)
@@ -70,14 +77,28 @@ def calculate_path(initial_position, destination):
     Use Clothoid library to create drivable path
     """
     print(initial_position, destination)
-    clothoid0 = Clothoid.G1Hermite(initial_position['x'], initial_position['y'], initial_position['orientations'][0],
-                                        destination['x'],       destination['y'],      destination['orientations'][0])
+
+    x0 = initial_position['x']
+    y0 = initial_position['y']
+    t0 = initial_position['orientations'][0]
+    x1 = destination['x']
+    y1 = destination['y']
+    t1 = (destination['orientations'][0]/1000)%(2*math.pi)
+
+    clothoid0 = Clothoid.G1Hermite(x0, y0, t0, x1, y1, t1)
     
-    trajectory = [];  npts = 80
-    sample_points = [clothoid0.length * m/(npts-1) for m in range(0,npts)]
+    trajectory = []
+    num_points = 80
+    sample_points = [clothoid0.length * m/(num_points-1) for m in range(0, num_points)]
     for i in sample_points:
         theta = clothoid0.Theta(i)%(2*math.pi)*1000
-        trajectory.append ({ 'x':clothoid0.X(i), 'y':clothoid0.Y(i), 'orientations':[theta,0], 'time': None})
+        point = {
+            'x': clothoid0.X(i),
+            'y': clothoid0.Y(i),
+            'orientations': [theta, 0],
+            'time': None
+        }
+        trajectory.append(point)
 
     return trajectory
 
