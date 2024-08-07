@@ -10,7 +10,7 @@
             "request": "attach",
             "connect": {
                 "host": "localhost",
-                "port": 5679
+                "port": 5680
             },
             "pathMappings": [
                 {
@@ -18,6 +18,6 @@
                     "remoteRoot": "/app"
                 }
             ]
-        }
+        },
     ]
 }
