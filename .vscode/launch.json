@@ -19,5 +19,20 @@
                 }
             ]
         },
+        {
+            "name": "trailer_transport_service",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5681
+            },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/microservices/trailer_transport_planner",
+                    "remoteRoot": "/app"
+                }
+            ]
+        },
     ]
 }

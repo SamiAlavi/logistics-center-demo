@@ -58,11 +58,13 @@ services:
         build: 
             context: ./microservices/trailer_transport_planner
             dockerfile: Dockerfile
+            target: ${TARGET}
 
         container_name: trailer_transport_service
 
         ports:
         - "9100:9100"
+        - 5681:5681
 
         restart: always
 
