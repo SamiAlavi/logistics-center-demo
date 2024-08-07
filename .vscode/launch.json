@@ -5,14 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python Debugger: Remote Attach",
+            "name": "local_planner_service",
             "type": "debugpy",
             "request": "attach",
             "connect": {
                 "host": "localhost",
                 "port": 5679
             },
-            "pathMappings": [  
+            "pathMappings": [
                 {
                     "localRoot": "${workspaceFolder}/microservices/clothoid_path_planner",
                     "remoteRoot": "/app"
