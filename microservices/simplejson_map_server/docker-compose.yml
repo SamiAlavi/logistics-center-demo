@@ -9,6 +9,7 @@ services:
 
     ports:
       - "9300:9300"
+      - "5683:5683"
 
     restart: always
 
