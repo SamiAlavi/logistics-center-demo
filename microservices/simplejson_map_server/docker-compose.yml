@@ -4,6 +4,8 @@ services:
   map_microservice:
     build: 
       context: .
+      dockerfile: Dockerfile
+      target: ${TARGET}
 
     image: safe20_map_server
 
