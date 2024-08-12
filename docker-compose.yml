@@ -36,13 +36,13 @@ services:
         container_name: local_planner_service
 
         ports:
-        - "9000:9000"
-        - "5680:5680"
+            - "9000:9000"
+            - "5680:5680"
 
         restart: always
 
         networks:
-        - control-tower-net
+            - control-tower-net
 
         volumes:
             - ./microservices/clothoid_path_planner/:/app
@@ -63,13 +63,13 @@ services:
         container_name: trailer_transport_service
 
         ports:
-        - "9100:9100"
-        - "5681:5681"
+            - "9100:9100"
+            - "5681:5681"
 
         restart: always
 
         networks:
-        - control-tower-net
+            - control-tower-net
 
         volumes:
             - ./microservices/trailer_transport_planner/:/app
@@ -85,13 +85,13 @@ services:
         container_name: pick_drop_park_service
 
         ports:
-        - "9200:9200"
-        - "5682:5682"
+            - "9200:9200"
+            - "5682:5682"
 
         restart: always
 
         networks:
-        - control-tower-net
+            - control-tower-net
 
         volumes:
             - ./microservices/pick_drop_service/:/app
@@ -106,13 +106,13 @@ services:
         container_name: map_service
 
         ports:
-        - "9300:9300"
-        - "5683:5683"
+            - "9300:9300"
+            - "5683:5683"
 
         restart: always
 
         networks:
-        - control-tower-net
+            - control-tower-net
 
         volumes:
             - ./microservices/simplejson_map_server/:/app
