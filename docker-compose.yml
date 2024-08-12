@@ -101,11 +101,13 @@ services:
         build: 
             context: ./microservices/simplejson_map_server
             dockerfile: Dockerfile
+            target: ${TARGET}
 
         container_name: map_service
 
         ports:
         - "9300:9300"
+        - 5683:5683
 
         restart: always
 

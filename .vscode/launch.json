@@ -49,5 +49,20 @@
                 }
             ]
         },
+        {
+            "name": "simplejson_map_server",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5683
+            },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/microservices/simplejson_map_server",
+                    "remoteRoot": "/app"
+                }
+            ]
+        },
     ]
 }
