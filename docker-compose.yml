@@ -31,7 +31,7 @@ services:
         build: 
             context: ./microservices/clothoid_path_planner
             dockerfile: Dockerfile
-            target: ${TARGET}
+            target: ${TARGET:-prod}
 
         container_name: local_planner_service
 
@@ -58,7 +58,7 @@ services:
         build: 
             context: ./microservices/trailer_transport_planner
             dockerfile: Dockerfile
-            target: ${TARGET}
+            target: ${TARGET:-prod}
 
         container_name: trailer_transport_service
 
@@ -80,7 +80,7 @@ services:
         build: 
             context: ./microservices/pick_drop_service
             dockerfile: Dockerfile
-            target: ${TARGET}
+            target: ${TARGET:-prod}
 
         container_name: pick_drop_park_service
 
@@ -101,7 +101,7 @@ services:
         build: 
             context: ./microservices/simplejson_map_server
             dockerfile: Dockerfile
-            target: ${TARGET}
+            target: ${TARGET:-prod}
 
         container_name: map_service
 

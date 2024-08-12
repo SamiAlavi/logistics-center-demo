@@ -12,7 +12,7 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
-      target: ${TARGET}
+      target: ${TARGET:-prod}
 
     container_name: local_planner_service
 

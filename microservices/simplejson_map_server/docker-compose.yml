@@ -5,7 +5,7 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
-      target: ${TARGET}
+      target: ${TARGET:-prod}
 
     image: safe20_map_server
 
