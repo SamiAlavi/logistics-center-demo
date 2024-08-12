@@ -17,7 +17,7 @@ services:
         command: ["node", "express.js"]
 
         networks:
-            - control-tower-net
+            - ${NETWORK_NAME}
             
 
 
@@ -42,7 +42,7 @@ services:
         restart: always
 
         networks:
-            - control-tower-net
+            - ${NETWORK_NAME}
 
         volumes:
             - ./microservices/clothoid_path_planner/:/app
@@ -69,7 +69,7 @@ services:
         restart: always
 
         networks:
-            - control-tower-net
+            - ${NETWORK_NAME}
 
         volumes:
             - ./microservices/trailer_transport_planner/:/app
@@ -91,7 +91,7 @@ services:
         restart: always
 
         networks:
-            - control-tower-net
+            - ${NETWORK_NAME}
 
         volumes:
             - ./microservices/pick_drop_service/:/app
@@ -112,7 +112,7 @@ services:
         restart: always
 
         networks:
-            - control-tower-net
+            - ${NETWORK_NAME}
 
         volumes:
             - ./microservices/simplejson_map_server/:/app
@@ -148,15 +148,15 @@ services:
             - UPDATE_RATE=10
 
             # RABBITMQ 
-            - RBMQ_HOST=local_message_broker 
-            - RBMQ_PORT=5672
-            - REGISTRATION_TOKEN=0001-0002-0003-0000-0004
+            - RBMQ_HOST=${RBMQ_HOST} 
+            - RBMQ_PORT=${RBMQ_PORT}
+            - REGISTRATION_TOKEN=${RBMQ_REGISTRATION_TOKEN}
 
         networks:
-            - control-tower-net   
+            - ${NETWORK_NAME}   
 
         depends_on:
-            - helyos_core     
+            - ${HELYOS_NAME}     
 
         command: ["python", "main.py"]
 
@@ -191,15 +191,15 @@ services:
             - UPDATE_RATE=10
 
             # RABBITMQ 
-            - RBMQ_HOST=local_message_broker 
-            - RBMQ_PORT=5672
-            - REGISTRATION_TOKEN=0001-0002-0003-0000-0004
+            - RBMQ_HOST=${RBMQ_HOST} 
+            - RBMQ_PORT=${RBMQ_PORT}
+            - REGISTRATION_TOKEN=${RBMQ_REGISTRATION_TOKEN}
 
         networks:
-            - control-tower-net   
+            - ${NETWORK_NAME}   
 
         depends_on:
-            - helyos_core     
+            - ${HELYOS_NAME}     
 
         command: ["python","-u", "main.py"]
 
@@ -219,17 +219,17 @@ services:
 
     local_message_broker:
         image:  rabbitmq:3-management
-        hostname: local_message_broker
+        hostname: ${RBMQ_HOST}
 
         ports: 
-            - "5672:5672"          
-            - "15672:15672"
+            - "${RBMQ_PORT}:${RBMQ_PORT}"          
+            - "${RBMQ_API_PORT}:${RBMQ_API_PORT}"
 
         volumes:
             - rbmq_data:/var/lib/rabbitmq/mnesia/
 
         networks:
-            - control-tower-net
+            - ${NETWORK_NAME}
 
 
 # # =================================================================================
@@ -248,10 +248,10 @@ services:
         command: ["python","-u", "/app/register_trailers_to_yard.py"]
 
         depends_on:
-            - helyos_core
+            - ${HELYOS_NAME}
 
         networks:
-            - control-tower-net
+            - ${NETWORK_NAME}
 # # ============================================================================
 # # ============================================================================
 # #                           HELYOS - SYSTEM INTEGRATION
@@ -260,22 +260,28 @@ services:
     db:
         image: postgres:13
         ports:
-            - "5432:5432"
+            - "${POSTGRES_PORT}:${POSTGRES_PORT}"
         volumes:
             - postgres_data:/var/lib/postgresql/data/
         environment:
-            POSTGRES_HOST_AUTH_METHOD: "trust"
+            - POSTGRES_HOST_AUTH_METHOD=trust
+            - POSTGRES_DB=${POSTGRES_HOST}
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            - PGPORT=${POSTGRES_PORT}
         networks:
-            - control-tower-net
-        container_name: db
+            - ${NETWORK_NAME}
+        container_name: ${POSTGRES_HOST}
 
 
     helyos_core:
         image: helyosframework/helyos_core:2.0.4
+            
+        container_name: ${HELYOS_NAME}
 
         ports:
             - "5002:5002"  # Websocket
-            - "5000:5000"  # GraphQL
+            - "${GQL_PORT}:${GQL_PORT}"  # GraphQL
             - "8080:8080"  # HelyOS Dashboard
 
 
@@ -287,19 +293,19 @@ services:
 
         environment:
             # DATABASE 
-            - PGUSER=postgres 
-            - PGPASSWORD=null
-            - PGHOST=db 
+            - PGUSER=${POSTGRES_USER} 
+            - PGPASSWORD=${POSTGRES_PASSWORD}
+            - PGHOST=${POSTGRES_HOST} 
             - PGDATABASE=autotruck 
-            - PGPORT=5432
+            - PGPORT=${POSTGRES_PORT}
             
             # GRAPHQL VARIABLES
-            - GQLPORT=5000
+            - GQLPORT=${GQL_PORT}
 
             # RABBITMQ 
-            - RBMQ_HOST=local_message_broker 
-            - RBMQ_PORT=5672
-            - RBMQ_API_PORT=15672     
+            - RBMQ_HOST=${RBMQ_HOST} 
+            - RBMQ_PORT=${RBMQ_PORT}
+            - RBMQ_API_PORT=${RBMQ_API_PORT}     
             - TTL_VISUAL_MSG=500  
             - TTL_STATE_MSG=2000
 
@@ -308,14 +314,14 @@ services:
             - CREATE_RBMQ_ACCOUNTS=True
             - RBMQ_ADMIN_USERNAME=${HELYOS_RBMQ_USERNAME} # set if CREATE_RBMQ_ACCOUNTS is True
             - RBMQ_ADMIN_PASSWORD=${HELYOS_RBMQ_PASSWORD} # set if CREATE_RBMQ_ACCOUNTS is True
-            - AGENT_REGISTRATION_TOKEN=0001-0002-0003-0000-0004
+            - AGENT_REGISTRATION_TOKEN=${RBMQ_REGISTRATION_TOKEN}
 
         networks:
-            - control-tower-net
+            - ${NETWORK_NAME}
 
         depends_on:
-            - db
-            - local_message_broker
+            - ${POSTGRES_HOST}
+            - ${RBMQ_HOST}
 
 
 
@@ -323,6 +329,7 @@ services:
 networks:
     control-tower-net:
        external: false
+       name: ${NETWORK_NAME}
            
 
 volumes:
