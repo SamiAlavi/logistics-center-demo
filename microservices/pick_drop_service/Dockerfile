@@ -14,5 +14,6 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=30s --retries=3 CMD curl
 FROM base AS dev
 RUN pip install debugpy
 ENV PYTHONUNBUFFERED 1
+EXPOSE 5682:5682
 ENTRYPOINT ["python", "-m", "debugpy", "--listen", "0.0.0.0:5682", "service.py"]
 HEALTHCHECK --interval=30s --timeout=30s --start-period=30s --retries=3 CMD curl -f http://localhost:9200/health || exit 1
