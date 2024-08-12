@@ -34,5 +34,20 @@
                 }
             ]
         },
+        {
+            "name": "pick_drop_service",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5682
+            },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}/microservices/pick_drop_service",
+                    "remoteRoot": "/app"
+                }
+            ]
+        },
     ]
 }

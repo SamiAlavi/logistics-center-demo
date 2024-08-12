@@ -80,11 +80,13 @@ services:
         build: 
             context: ./microservices/pick_drop_service
             dockerfile: Dockerfile
+            target: ${TARGET}
 
         container_name: pick_drop_park_service
 
         ports:
         - "9200:9200"
+        - 5682:5682
 
         restart: always
 
