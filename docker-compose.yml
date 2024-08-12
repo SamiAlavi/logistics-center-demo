@@ -12,7 +12,7 @@ services:
         image: autotruck/autotruck_webclient:2.0.4
 
         ports: 
-            - 3080:3080            
+            - "3080:3080"            
                 
         command: ["node", "express.js"]
 
@@ -37,7 +37,7 @@ services:
 
         ports:
         - "9000:9000"
-        - 5680:5680 
+        - "5680:5680"
 
         restart: always
 
@@ -64,7 +64,7 @@ services:
 
         ports:
         - "9100:9100"
-        - 5681:5681
+        - "5681:5681"
 
         restart: always
 
@@ -86,7 +86,7 @@ services:
 
         ports:
         - "9200:9200"
-        - 5682:5682
+        - "5682:5682"
 
         restart: always
 
@@ -107,7 +107,7 @@ services:
 
         ports:
         - "9300:9300"
-        - 5683:5683
+        - "5683:5683"
 
         restart: always
 
@@ -222,8 +222,8 @@ services:
         hostname: local_message_broker
 
         ports: 
-            - 5672:5672          
-            - 15672:15672
+            - "5672:5672"          
+            - "15672:15672"
 
         volumes:
             - rbmq_data:/var/lib/rabbitmq/mnesia/
@@ -274,9 +274,9 @@ services:
         image: helyosframework/helyos_core:2.0.4
 
         ports:
-            - 5002:5002  # Websocket
-            - 5000:5000  # GraphQL
-            - 8080:8080  # HelyOS Dashboard
+            - "5002:5002"  # Websocket
+            - "5000:5000"  # GraphQL
+            - "8080:8080"  # HelyOS Dashboard
 
 
         volumes:
