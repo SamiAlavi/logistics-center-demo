@@ -1,4 +1,6 @@
 FROM python:3.10.10-alpine3.17 AS base
+RUN apk add curl
+
 WORKDIR /app
 COPY requirements.txt .
 # RUN  pip3 install --extra-index-url https://alpine-wheels.github.io/index numpy
