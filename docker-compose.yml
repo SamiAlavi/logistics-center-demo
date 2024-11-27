@@ -8,7 +8,8 @@ services:
 # ============================================================================
 
     yard_automation_app:
-        image: autotruck/autotruck_webclient:2.0.4
+        image: autotruck/autotruck_webclient:2.1.6
+        platform: linux/amd64
 
         ports: 
             - 3080:3080            
@@ -118,7 +119,7 @@ services:
 
 
     agent_simulator_1:
-        image: helyosframework/helyos_agent_slim_simulator:0.8.0
+        image: helyosframework/helyos_agent_slim_simulator:0.8.2
         platform: linux/amd64
 
         volumes:
@@ -160,7 +161,7 @@ services:
 
 
     agent_simulator_2:
-        image: helyosframework/helyos_agent_slim_simulator:0.8.0
+        image: helyosframework/helyos_agent_slim_simulator:0.8.2
         platform: linux/amd64
 
 
@@ -262,7 +263,7 @@ services:
 
 
     helyos_core:
-        image: helyosframework/helyos_core:2.0.4
+        image: helyosframework/helyos_core:2.1.6
 
         ports:
             - 5002:5002  # Websocket
