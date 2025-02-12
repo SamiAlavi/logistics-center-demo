@@ -135,8 +135,7 @@ services:
             - Y0=29000
             - ORIENTATION=0.329
             - VELOCITY=3.6
-            - VEHICLE_PARTS=2
-            - YARD_UID=1
+            - YARD_UID=EM01
             - UPDATE_RATE=10
 
             # RABBITMQ 
@@ -150,7 +149,7 @@ services:
         depends_on:
             - helyos_core     
 
-        command: ["python", "main.py"]
+        command: ["python", "-u", "main.py"]
 
         deploy:
             restart_policy:
@@ -178,8 +177,7 @@ services:
             - Y0=10000
             - ORIENTATION=0.329
             - VELOCITY=3.6
-            - VEHICLE_PARTS=2
-            - YARD_UID=1
+            - YARD_UID=EM01
             - UPDATE_RATE=10
 
             # RABBITMQ 
@@ -240,7 +238,8 @@ services:
         command: ["python","-u", "/app/register_trailers_to_yard.py"]
 
         depends_on:
-            - helyos_core
+            helyos_core:
+                condition: service_healthy
 
         networks:
             - control-tower-net
@@ -250,7 +249,7 @@ services:
 # # ============================================================================
 # # ============================================================================
     db:
-        image: postgres:13
+        image: postgres:14
         ports:
             - "5432:5432"
         volumes:
@@ -263,13 +262,19 @@ services:
 
 
     helyos_core:
-        image: helyosframework/helyos_core:2.1.6
+        image: helyosframework/helyos_core:2.2.0
 
         ports:
             - 5002:5002  # Websocket
             - 5000:5000  # GraphQL
             - 8080:8080  # HelyOS Dashboard
 
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://helyos_core:8080/public-key"]
+            interval: 1m30s
+            timeout: 30s
+            retries: 5
+            start_period: 60s
 
         volumes:
             - ./settings/config:/etc/helyos/config/
@@ -284,6 +289,7 @@ services:
             - PGHOST=db 
             - PGDATABASE=autotruck 
             - PGPORT=5432
+            - DB_BUFFER_TIME=1000
             
             # GRAPHQL VARIABLES
             - GQLPORT=5000
@@ -294,6 +300,8 @@ services:
             - RBMQ_API_PORT=15672     
             - TTL_VISUAL_MSG=500  
             - TTL_STATE_MSG=2000
+            - MESSAGE_UPDATE_LIMIT=10
+            - MESSAGE_RATE_LIMIT=50
 
 
             # RBMQ ACCOUNTS

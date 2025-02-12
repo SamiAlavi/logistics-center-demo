@@ -148,10 +148,19 @@ def getPath():
         drive_to_origin_step = findStep(dependencies, 'drive_to_origin')
 
         # Add new assignments to mission
+        drive_to_trailer_step['results'][0]["assignment_order"] = 1
+        connect_prep_move_step['results'][0]["assignment_order"] = 2
+        drive_trailer_to_destiny_step['results'][0]["assignment_order"] = 3
+        drive_trailer_to_origin_step['results'][0]["assignment_order"] = 4
+        disconnect_return_truck_step['results'][0]["assignment_order"] = 5
+        drive_to_origin_step['results'][0]["assignment_order"] = 6
+
+        
         results =  drive_to_trailer_step['results'] + connect_prep_move_step['results'] + drive_trailer_to_destiny_step['results'] + \
                   drive_trailer_to_origin_step['results'] + disconnect_return_truck_step['results'] + drive_to_origin_step['results']
 
-        response =   { "status": "ready", "results": results, 'dispatch_order':[[0],[1],[2],[3],[4],[5]] }
+        # response =   { "status": "ready", "results": results, 'dispatch_order':[[0],[1],[2],[3],[4],[5]] } //dispatch_order is depracated
+        response =   { "status": "ready", "results": results }
     
     return jsonify(response)
 
