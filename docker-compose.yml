@@ -138,8 +138,7 @@ services:
             - Y0=29000
             - ORIENTATION=0.329
             - VELOCITY=3.6
-            - VEHICLE_PARTS=2
-            - YARD_UID=1
+            - YARD_UID=EM01
             - UPDATE_RATE=10
 
             # RABBITMQ 
@@ -178,8 +177,7 @@ services:
             - Y0=10000
             - ORIENTATION=0.329
             - VELOCITY=3.6
-            - VEHICLE_PARTS=2
-            - YARD_UID=1
+            - YARD_UID=EM01
             - UPDATE_RATE=10
 
             # RABBITMQ 
@@ -256,7 +254,7 @@ services:
 # # ============================================================================
 
     db:
-        image: postgres:13
+        image: postgres:14
         
         container_name: ${POSTGRES_HOST}
 
@@ -278,7 +276,7 @@ services:
 
 
     helyos_core:
-        image: helyosframework/helyos_core:2.1.6
+        image: helyosframework/helyos_core:2.2.0
             
         container_name: ${HELYOS_NAME}
 
@@ -300,6 +298,7 @@ services:
             - PGHOST=${POSTGRES_HOST} 
             - PGDATABASE=autotruck 
             - PGPORT=${POSTGRES_PORT}
+            - DB_BUFFER_TIME=1000
             
             # GRAPHQL VARIABLES
             - GQLPORT=${GQL_PORT}
@@ -310,6 +309,9 @@ services:
             - RBMQ_API_PORT=${RBMQ_API_PORT}     
             - TTL_VISUAL_MSG=500  
             - TTL_STATE_MSG=2000
+            - MESSAGE_UPDATE_LIMIT=10
+            - MESSAGE_RATE_LIMIT=50
+
 
             # RBMQ ACCOUNTS
             - CREATE_RBMQ_ACCOUNTS=True

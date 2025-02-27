@@ -6,7 +6,7 @@ services:
       is_dummy: false
       domain: "Assignment planner"  # Assignment planner | Map Server | Storage server
       type: "drive"
-      url: https://trucktrix.ivi.fraunhofer.de/trucktrix-path-api/
+      url: https://trucktrix.ivi.fraunhofer.de/trucktrix-path-api/plan_job/
       enable: false
       apikey: "copy-here-the-API-key"
       timeout: 300
@@ -61,7 +61,7 @@ services:
 
     pick_drop_park_service:
       domain: "Assignment planner"  # Assignment planner | Map server | Storage server
-      type: "pick_drop_park"
+      type: "pick_drop_park"  
       url:     "http://pick_drop_park_service:9200/plan_job/"
       enable: true
       apikey: "super_secret"
