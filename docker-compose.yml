@@ -285,6 +285,13 @@ services:
             - "${GQL_PORT}:${GQL_PORT}"  # GraphQL
             - "8080:8080"  # HelyOS Dashboard
 
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://helyos_core:8080/public-key"]
+            interval: 1m30s
+            timeout: 30s
+            retries: 5
+            start_period: 60s
+
         volumes:
             - ./settings/config:/etc/helyos/config/
             - ./settings/db_initial_data/:/etc/helyos/db_initial_data/
