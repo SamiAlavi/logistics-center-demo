@@ -241,7 +241,8 @@ services:
         command: ["python", "-u", "/app/register_trailers_to_yard.py"]
 
         depends_on:
-            - ${HELYOS_NAME}
+            helyos_core:
+                condition: service_healthy
 
         networks:
             - ${NETWORK_NAME}
@@ -287,10 +288,10 @@ services:
 
         healthcheck:
             test: ["CMD", "curl", "-f", "http://helyos_core:8080/public-key"]
-            interval: 1m30s
-            timeout: 30s
-            retries: 5
-            start_period: 60s
+            # interval: 1m30s
+            # timeout: 30s
+            # retries: 5
+            # start_period: 60s
 
         volumes:
             - ./settings/config:/etc/helyos/config/
