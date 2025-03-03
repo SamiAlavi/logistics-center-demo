@@ -275,6 +275,16 @@ services:
         networks:
             - ${NETWORK_NAME}
 
+    local_redis:
+        image: redis:latest
+        ports:
+            - "${REDIS_PORT}:${REDIS_PORT}"
+        volumes:
+            - redis_data:/data
+        command: redis-server --requirepass ${REDIS_PASSWORD}
+        networks:
+            - ${NETWORK_NAME}
+
 
     helyos_core:
         image: helyosframework/helyos_core:2.2.0
@@ -306,7 +316,6 @@ services:
             - PGHOST=${POSTGRES_HOST} 
             - PGDATABASE=autotruck 
             - PGPORT=${POSTGRES_PORT}
-            - DB_BUFFER_TIME=1000
             
             # GRAPHQL VARIABLES
             - GQLPORT=${GQL_PORT}
@@ -327,12 +336,25 @@ services:
             - RBMQ_ADMIN_PASSWORD=${HELYOS_RBMQ_PASSWORD} # set if CREATE_RBMQ_ACCOUNTS is True
             - AGENT_REGISTRATION_TOKEN=${RBMQ_REGISTRATION_TOKEN}
 
+            # CHANGE FOR PERFORMANCE TESTING
+            - NUM_THREADS=1
+            - HELYOS_REPLICA=false # if using helyos replicas
+            - SOCKET_IO_ADAPTER=redis # redis | none
+            - DB_BUFFER_TIME=1000 # important to change to stress database, very impoortant
+            - PREFETCH_COUNT=1 # set to 1 for fair distribution
+
+            # REDIS-COMPATIBLE inMEM DB
+            - REDIS_HOST=${REDIS_HOST}
+            - REDIS_PORT=${REDIS_PORT}
+            - REDIS_PASSWORD=${REDIS_PASSWORD}
+
         networks:
             - ${NETWORK_NAME}
 
         depends_on:
             - ${POSTGRES_HOST}
             - ${RBMQ_HOST}
+            - ${REDIS_HOST}
 
 
 networks:
@@ -346,4 +368,7 @@ volumes:
         external: false
 
     rbmq_data:
+        external: false
+        
+    redis_data:
         external: false
